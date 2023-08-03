@@ -6,6 +6,8 @@ package Vista;
 
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import Modelo.Productos;
+import Modelo.ProductosDAO;
 import Modelo.Proveedor;
 import Modelo.ProveedorDAO;
 import java.util.List;
@@ -22,6 +24,8 @@ public class Sistema extends javax.swing.JFrame {
     ClienteDAO client = new ClienteDAO();
     Proveedor pr = new Proveedor();
     ProveedorDAO PrDao = new ProveedorDAO();
+    Productos prod = new Productos();
+    ProductosDAO prodDAO = new ProductosDAO();
     DefaultTableModel modelo = new DefaultTableModel();
 
     public Sistema() {
@@ -759,6 +763,11 @@ public class Sistema extends javax.swing.JFrame {
         }
 
         btnGuardarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
+        btnGuardarPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarProActionPerformed(evt);
+            }
+        });
 
         btnEditarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Actualizar (2).png"))); // NOI18N
 
@@ -1021,6 +1030,7 @@ public class Sistema extends javax.swing.JFrame {
             cl.setTelefono(Integer.parseInt(txtTelefonoCliente.getText()));
             cl.setDireccion(txtDireccionCliente.getText());
             client.RegistrarCliente(cl);
+            JOptionPane.showMessageDialog(null, "Cliente Registrado");
             LimpiarTable();
             LimpiarCliente();
             ListarCliente();
@@ -1079,6 +1089,7 @@ public class Sistema extends javax.swing.JFrame {
                 cl.setRazon(txtRazonCliente.getText());
                 cl.setId(Integer.parseInt(txtIdCliente.getText()));
                 client.ModificarCliente(cl);
+                JOptionPane.showMessageDialog(null, "Cliente Actualizado");
                 LimpiarTable();
                 LimpiarCliente();
                 ListarCliente();
@@ -1102,6 +1113,7 @@ public class Sistema extends javax.swing.JFrame {
             pr.setDireccion(txtDireccionProveedor.getText());
             pr.setRazon(txtRazonProveedor.getText());
             PrDao.RegistrarProveedor(pr);
+            JOptionPane.showMessageDialog(null, "Proveedor Registrado");
             LimpiarTable();
             ListarProveedor();
             LimpiarProveedor();
@@ -1121,7 +1133,7 @@ public class Sistema extends javax.swing.JFrame {
                 LimpiarProveedor();
                 ListarProveedor();
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Seleccione una fila");
         }
     }//GEN-LAST:event_btnEliminarProveedorActionPerformed
@@ -1151,6 +1163,7 @@ public class Sistema extends javax.swing.JFrame {
                 pr.setRazon(txtRazonProveedor.getText());
                 pr.setId(Integer.parseInt(txtIdProveedor.getText()));
                 PrDao.ModificarProveedor(pr);
+                JOptionPane.showMessageDialog(null, "Proveedor Modificado");
                 LimpiarTable();
                 LimpiarProveedor();
                 ListarProveedor();
@@ -1164,6 +1177,23 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
         LimpiarProveedor();
     }//GEN-LAST:event_btnNuevoProveedorActionPerformed
+
+    private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
+        // TODO add your handling code here:
+        if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(cbxProveedor.getSelectedItem()) || !"".equals(txtCantPro.getText()) || !"".equals(txtPrecioPro.getText())) {
+            prod.setCodigo(txtCodigoPro.getText());
+            prod.setNombre(txtDesPro.getText());
+            prod.setProveedor(cbxProveedor.getSelectedItem().toString());
+            prod.setStock(Integer.parseInt(txtCantPro.getText()));
+            prod.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
+            prodDAO.RegistrarProductos(prod);
+            JOptionPane.showMessageDialog(null, "Producto Registrado");
+            LimpiarTable();
+            LimpiarProducto();
+        } else {
+            JOptionPane.showMessageDialog(null, "Los campos están vacios");
+        }
+    }//GEN-LAST:event_btnGuardarProActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1179,16 +1209,24 @@ public class Sistema extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Sistema.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Sistema.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Sistema.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Sistema.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -1318,7 +1356,7 @@ public class Sistema extends javax.swing.JFrame {
         txtDireccionCliente.setText("");
         txtRazonCliente.setText("");
     }
-    
+
     private void LimpiarProveedor() {
         txtIdProveedor.setText("");
         txtRucProveedor.setText("");
@@ -1326,5 +1364,14 @@ public class Sistema extends javax.swing.JFrame {
         txtTelefonoProveedor.setText("");
         txtDireccionProveedor.setText("");
         txtRazonProveedor.setText("");
+    }
+    
+    private void LimpiarProducto() {
+        txtIdPro.setText("");
+        txtCodigoPro.setText("");
+        txtDesPro.setText("");
+        cbxProveedor.setSelectedItem("");
+        txtCantPro.setText("");
+        txtPrecioPro.setText("");
     }
 }

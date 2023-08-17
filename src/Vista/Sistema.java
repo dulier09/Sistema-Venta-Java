@@ -801,6 +801,11 @@ public class Sistema extends javax.swing.JFrame {
         });
 
         btnEditarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Actualizar (2).png"))); // NOI18N
+        btnEditarPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarProActionPerformed(evt);
+            }
+        });
 
         btnEliminarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
         btnEliminarPro.addActionListener(new java.awt.event.ActionListener() {
@@ -1264,6 +1269,30 @@ public class Sistema extends javax.swing.JFrame {
         
         //Este código llena los todos los campos variables del producto que se selecciona de la lista.
     }//GEN-LAST:event_TableProductoMouseClicked
+
+    private void btnEditarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarProActionPerformed
+        // TODO add your handling code here:
+        if ("".equals(txtIdPro.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+
+            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(txtCantPro.getText()) || !"".equals(txtPrecioPro.getText())) {
+                prod.setCodigo(txtCodigoPro.getText());
+                prod.setNombre(txtDesPro.getText());
+                prod.setProveedor(cbxProveedorPro.getSelectedItem().toString());
+                prod.setStock(Integer.parseInt(txtCantPro.getText()));
+                prod.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
+                prod.setId(Integer.parseInt(txtIdPro.getText()));
+                prodDAO.ModificarProducto(prod);
+                JOptionPane.showMessageDialog(null, "Producto Actualizado");
+                LimpiarTable();
+                LimpiarProducto();
+                ListarProductos();
+            } else {
+                JOptionPane.showMessageDialog(null, "Los campos están vacios");
+            }
+        }
+    }//GEN-LAST:event_btnEditarProActionPerformed
 
     /**
      * @param args the command line arguments

@@ -11,6 +11,7 @@ import Modelo.ProductosDAO;
 import Modelo.Proveedor;
 import Modelo.ProveedorDAO;
 import Reportes.Excel;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -309,6 +310,12 @@ public class Sistema extends javax.swing.JFrame {
         jLabel7.setText("Stock Disponible");
 
         btnEliminarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
+
+        txtCodigoVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoVentaKeyPressed(evt);
+            }
+        });
 
         txtPrecioVenta.setEditable(false);
 
@@ -1304,6 +1311,30 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
         Excel.reporte();
     }//GEN-LAST:event_btnExcelProActionPerformed
+
+    private void txtCodigoVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoVentaKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {   //Aquí se verifica que el usuario halla dado click en la tecla enter
+            if (!"".equals(txtCodigoVenta.getText())) {  // Verificamos que el campo no esté vacío
+                String cod = txtCodigoVenta.getText();
+                prod = prodDAO.BuscarProducto(cod);
+                if (prod.getNombre() != null) {  // Verifica si el producto exixte
+                    txtDescripcionVenta.setText(""+prod.getNombre());
+                    txtPrecioVenta.setText(""+prod.getPrecio());
+                    txtStockDisponible.setText(""+prod.getStock());
+                    txtCantidadVenta.requestFocus();  // Lo pasamos a cantidad
+                }else{
+                    txtDescripcionVenta.setText("");
+                    txtPrecioVenta.setText("");
+                    txtStockDisponible.setText("");
+                    txtCodigoVenta.requestFocus();
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Ingrese el código del Produco");  //  Mensaje si el usuario no ingresó el código
+                txtCodigoVenta.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_txtCodigoVentaKeyPressed
 
     /**
      * @param args the command line arguments

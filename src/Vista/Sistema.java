@@ -12,6 +12,7 @@ import Modelo.Proveedor;
 import Modelo.ProveedorDAO;
 import Reportes.Excel;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +31,8 @@ public class Sistema extends javax.swing.JFrame {
     Productos prod = new Productos();
     ProductosDAO prodDAO = new ProductosDAO();
     DefaultTableModel modelo = new DefaultTableModel();
+    int item;
+    double Totalpagar = 0.00;
 
     public Sistema() {
         initComponents();
@@ -314,6 +317,12 @@ public class Sistema extends javax.swing.JFrame {
         txtCodigoVenta.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCodigoVentaKeyPressed(evt);
+            }
+        });
+
+        txtCantidadVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCantidadVentaKeyPressed(evt);
             }
         });
 
@@ -1324,9 +1333,7 @@ public class Sistema extends javax.swing.JFrame {
                     txtStockDisponible.setText(""+prod.getStock());
                     txtCantidadVenta.requestFocus();  // Lo pasamos a cantidad
                 }else{
-                    txtDescripcionVenta.setText("");
-                    txtPrecioVenta.setText("");
-                    txtStockDisponible.setText("");
+                    LimpiarVenta();
                     txtCodigoVenta.requestFocus();
                 }
             }else{
@@ -1335,6 +1342,52 @@ public class Sistema extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_txtCodigoVentaKeyPressed
+
+    private void txtCantidadVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadVentaKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {  // Se valida que el usuario dió clic en el eneter, se ingresó por design event
+            if (!"".equals(txtCantidadVenta.getText())){  // Se valida que el usuario haya ingresado una cantidad
+                String cod = txtCodigoVenta.getText();
+                String descripcion = txtDescripcionVenta.getText();
+                int cant = Integer.parseInt(txtCantidadVenta.getText());
+                double precio = Double.parseDouble(txtPrecioVenta.getText());
+                double total = cant * precio;
+                int stock = Integer.parseInt(txtStockDisponible.getText());
+                if (stock >= cant) {
+                    item = item + 1;
+                    modelo = (DefaultTableModel) TableVenta.getModel();
+                    for (int i = 0; i < TableVenta.getRowCount(); i++){
+                    if (TableVenta.getValueAt(i, 1).equals(txtDescripcionVenta.getText())){
+                        JOptionPane.showMessageDialog(null, "El producto ya está registrado");
+                        return;
+                    }
+                }
+                    ArrayList lista = new ArrayList();
+                    lista.add(item);
+                    lista.add(cod);
+                    lista.add(descripcion);
+                    lista.add(cant);
+                    lista.add(precio);
+                    lista.add(total);
+                    Object[] O = new Object[5];
+                    O[0] = lista.get(1);  // codigo
+                    O[1] = lista.get(2);  // descripcion
+                    O[2] = lista.get(3);  // cantidad
+                    O[3] = lista.get(4);  // precio
+                    O[4] = lista.get(5);  // total
+                    modelo.addRow(O); // Agregamos el object al modelo
+                    TableVenta.setModel(modelo);  // Se agrega el modelo a la tabla
+                    TotalPagar();
+                    LimpiarVenta();
+                    txtCodigoVenta.requestFocus();
+                }else{
+                    JOptionPane.showMessageDialog(null, "Stock no disponinle");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Ingrese Cantidad");
+            }
+        }
+    }//GEN-LAST:event_txtCantidadVentaKeyPressed
 
     /**
      * @param args the command line arguments
@@ -1514,5 +1567,23 @@ public class Sistema extends javax.swing.JFrame {
         cbxProveedorPro.setSelectedItem(null);
         txtCantPro.setText("");
         txtPrecioPro.setText("");
+    }
+    
+    private void TotalPagar(){
+        Totalpagar = 0.00;
+        int numFila = TableVenta.getRowCount();
+        for (int i = 0; i < numFila; i++) {
+            double cal = Double.parseDouble(String.valueOf(TableVenta.getModel().getValueAt(i, 4)));   // Se hace parseo, se convierte el object a string y se asigna al 4(total)
+            Totalpagar = Totalpagar + cal;
+        }
+        LabelTotal.setText(String.format("%.2f", Totalpagar));
+    }
+    
+    private void LimpiarVenta(){
+       txtCodigoVenta.setText("");
+       txtDescripcionVenta.setText("");
+       txtCantidadVenta.setText("");
+       txtStockDisponible.setText("");
+       txtPrecioVenta.setText("");
     }
 }

@@ -37,6 +37,7 @@ public class Sistema extends javax.swing.JFrame {
     VentaDao Vdao = new VentaDao();
     Detalle Dv = new Detalle();
     DefaultTableModel modelo = new DefaultTableModel();
+    DefaultTableModel tmp = new DefaultTableModel();
     int item;
     double Totalpagar = 0.00;
 
@@ -1388,6 +1389,7 @@ public class Sistema extends javax.swing.JFrame {
                 if (stock >= cant) {
                     item = item + 1;
                     modelo = (DefaultTableModel) TableVenta.getModel();
+                    //tmp = (DefaultTableModel) TableVenta.getModel();
                     for (int i = 0; i < TableVenta.getRowCount(); i++){
                     if (TableVenta.getValueAt(i, 1).equals(txtDescripcionVenta.getText())){
                         JOptionPane.showMessageDialog(null, "El producto ya está registrado");
@@ -1452,6 +1454,9 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
         RegistrarVenta();
         RegistarDetalle();
+        ActualizarStock();
+        LimpiarTableVenta();
+        LimpiarClienteVenta();
     }//GEN-LAST:event_btnGenerarVentaActionPerformed
 
     /**
@@ -1675,5 +1680,31 @@ public class Sistema extends javax.swing.JFrame {
             Dv.setId(id);
             Vdao.RegistrarDetalle(Dv);
         }
+    }
+    
+    private void ActualizarStock(){
+        for (int i = 0; i < TableVenta.getRowCount(); i++) {
+            String cod = TableVenta.getValueAt(i, 0).toString();
+            int cant = Integer.parseInt(TableVenta.getValueAt(i, 2).toString());
+            prod = prodDAO.BuscarProducto(cod);
+            int StockActual = prod.getStock() - cant;
+            Vdao.ActualizarStock(StockActual, cod);
+        }
+    }
+    
+    private void LimpiarTableVenta() {
+        tmp = (DefaultTableModel) TableVenta.getModel();
+        int fila = TableVenta.getRowCount();
+        for (int i = 0; i < fila; i++) {
+            tmp.removeRow(0);
+        }
+    }
+    
+    private void LimpiarClienteVenta(){
+        txtRucVenta.setText("");
+        txtNombreClienteVenta.setText("");
+        txtTelefonoCV.setText("");
+        txtDireccionCV.setText("");
+        txtRazonCV.setText("");
     }
 }

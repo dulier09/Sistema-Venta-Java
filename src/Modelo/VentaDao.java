@@ -2,6 +2,7 @@ package Modelo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -10,7 +11,24 @@ public class VentaDao {
     Conexion cn = new Conexion();
     Connection con;
     PreparedStatement ps;
+    ResultSet rs;
     int r;
+    
+    public int IdVenta(){
+        int id = 0;
+        String sql = "SELECT MAX(id) FROM ventas";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return id;
+    }
 
     public int RegistrarVenta(Venta v) {
         String sql = "INSERT INTO ventas (cliente, vendedor, total) VALUES (?,?,?)";
